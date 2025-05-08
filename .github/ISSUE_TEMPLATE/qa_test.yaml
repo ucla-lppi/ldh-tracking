@@ -1,6 +1,5 @@
-name: "QA Test: [Feature/Functionality]"
+name: "QA Test"
 description: "Log QA results for a feature or functionality."
-title: "QA: [Feature/Functionality Name]"
 labels: ["QA", "Current Release", "Status: In Progress"]
 body:
   - type: input
@@ -8,7 +7,7 @@ body:
     attributes:
       label: Feature/Functionality
       description: "What are you testing?"
-      placeholder: "e.g., The ACS-based indicator title is revised to reflect use of 2022 data"
+      placeholder: "e.g., ACS indicator title update"
     validations:
       required: true
 
@@ -26,7 +25,10 @@ body:
   - type: checkboxes
     id: browsers_tested
     attributes:
-      label: Browsers/Devices Tested (check all that apply)
+      label: Browsers/Devices Tested
+      description: |
+        Check all browsers/devices you actually tested.
+        **If you tested a browser/device and do not check it as passed below, it will be considered a failure.**
       options:
         - label: Chrome - desktop
         - label: Safari - desktop
@@ -38,7 +40,9 @@ body:
   - type: checkboxes
     id: browsers_passed
     attributes:
-      label: Browsers/Devices Passed (check all that apply)
+      label: Browsers/Devices Passed
+      description: |
+        Check all browsers/devices that passed all tests for this feature.
       options:
         - label: Chrome - desktop
         - label: Safari - desktop
@@ -51,9 +55,11 @@ body:
     id: notes
     attributes:
       label: Notes and Issues
-      description: "Describe any issues, device used, and how to reproduce, if applicable."
+      description: |
+        List any browsers/devices that failed, details, and steps to reproduce.
+        You can also drag and drop screenshots here after submitting the issue.
 
   - type: markdown
     attributes:
       value: |
-        **Note:** The overall QA status (`QA Status: Pass` or `QA Status: Fail`) will be set automatically based on your selections above.
+        **Note:** The QA Status label (`QA Status: Pass` or `QA Status: Fail`) will be set automatically based on your selections above.

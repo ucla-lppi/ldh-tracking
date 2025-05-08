@@ -15,8 +15,9 @@ jobs:
         uses: actions/github-script@v7.0.1
         with:
           script: |
-            // Helper to extract checked items from markdown checkbox lists
+            // Helper to extract checked items from a markdown checkbox list
             function getCheckedItems(body, sectionLabel) {
+              // Find the section by label
               const regex = new RegExp(sectionLabel + '[\\s\\S]*?(?:- \\[[ xX]\\] .+)+', 'm');
               const section = body.match(regex);
               if (!section) return [];
