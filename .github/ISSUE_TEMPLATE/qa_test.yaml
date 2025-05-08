@@ -1,16 +1,9 @@
 name: "QA Test"
-description: "Log QA results for a feature or functionality."
+description: |
+  Log QA results for a feature or functionality.
+  For the issue title, please enter the feature or functionality you are testing (e.g., 'The ACS-based indicator title is revised to reflect use of 2022 data').
 labels: ["QA", "Current Release", "Status: In Progress"]
 body:
-  - type: input
-    id: feature
-    attributes:
-      label: Feature/Functionality
-      description: "What are you testing?"
-      placeholder: "e.g., ACS indicator title update"
-    validations:
-      required: true
-
   - type: dropdown
     id: priority
     attributes:
