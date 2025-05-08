@@ -1,0 +1,48 @@
+name: Auto-label QA Status
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  label-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set QA Status Label
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            // Helper to extract checked items from a markdown checkbox list
+            function getCheckedItems(body, sectionLabel) {
+              const regex = new RegExp(sectionLabel + '[\\s\\S]*?(?:- \\[[ xX]\\] .+)+', 'm');
+              const section = body.match(regex);
+              if (!section) return [];
+              return Array.from(section[0].matchAll(/- \[[xX]\] (.+)/g)).map(m => m[1].trim());
+            }
+
+            // Get tested and passed browsers
+            const tested = getCheckedItems(context.payload.issue.body, "Browsers/Devices Tested");
+            const passed = getCheckedItems(context.payload.issue.body, "Browsers/Devices Passed");
+
+            // Determine if all tested browsers are also passed
+            const allPassed = tested.every(browser => passed.includes(browser));
+            const addLabel = allPassed ? "Status: Passing" : "Status: Failing";
+            const removeLabel = allPassed ? "Status: Failing" : "Status: Passing";
+
+            // Remove "Status: In Progress" if status is set
+            const labelsToRemove = ["Status: In Progress", removeLabel];
+            const labelsToAdd = [addLabel];
+
+            // Remove old status labels
+            const currentLabels = context.payload.issue.labels.map(l => l.name);
+            const newLabels = currentLabels.filter(l => !labelsToRemove.includes(l)).concat(labelsToAdd.filter(l => !currentLabels.includes(l)));
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: newLabels
+            });
