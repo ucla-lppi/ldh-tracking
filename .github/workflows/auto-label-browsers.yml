@@ -11,13 +11,12 @@ jobs:
   label-qa-status:
     runs-on: ubuntu-latest
     steps:
-      - name: Set QA Status Label
+      - name: Set QA Status and Priority Labels
         uses: actions/github-script@v7.0.1
         with:
           script: |
             // Helper to extract checked items from a markdown checkbox list
             function getCheckedItems(body, sectionLabel) {
-              // Find the section by label
               const regex = new RegExp(sectionLabel + '[\\s\\S]*?(?:- \\[[ xX]\\] .+)+', 'm');
               const section = body.match(regex);
               if (!section) return [];
@@ -33,10 +32,27 @@ jobs:
             // Determine if all tested browsers passed
             const allPassed = tested.length > 0 && tested.every(browser => passed.includes(browser));
 
-            // Define labels
+            // Define QA Status labels
             const passLabel = "QA Status: Pass";
             const failLabel = "QA Status: Fail";
             const inProgressLabel = "Status: In Progress";
+
+            // Priority mapping
+            const priorityMap = {
+              "High": "Priority: High",
+              "Medium": "Priority: Medium",
+              "Low": "Priority: Low",
+              "Not Assigned": "Priority: Not Assigned"
+            };
+            const allPriorityLabels = Object.values(priorityMap);
+
+            // Extract selected priority from the issue body
+            let selectedPriority = null;
+            const priorityMatch = issueBody.match(/### Priority \(optional\)[\s\S]*?\n([^\n]+)/);
+            if (priorityMatch) {
+              selectedPriority = priorityMatch[1].trim();
+            }
+            const priorityLabel = priorityMap[selectedPriority];
 
             // Current labels on the issue
             const currentLabels = context.payload.issue.labels.map(label => label.name);
@@ -45,12 +61,23 @@ jobs:
             let labelsToAdd = [];
             let labelsToRemove = [];
 
+            // QA Status labels
             if (allPassed) {
               labelsToAdd.push(passLabel);
               labelsToRemove.push(failLabel, inProgressLabel);
             } else {
               labelsToAdd.push(failLabel);
               labelsToRemove.push(passLabel, inProgressLabel);
+            }
+
+            // Priority labels
+            if (priorityLabel) {
+              // Add the selected priority label if not present
+              if (!currentLabels.includes(priorityLabel)) {
+                labelsToAdd.push(priorityLabel);
+              }
+              // Remove all other priority labels
+              labelsToRemove.push(...allPriorityLabels.filter(l => l !== priorityLabel));
             }
 
             // Remove old labels and add new ones

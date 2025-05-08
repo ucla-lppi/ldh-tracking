@@ -14,9 +14,9 @@ body:
       label: Priority (optional)
       description: "How urgent is this QA check?"
       options:
-        - Priority: High
-        - Priority: Medium
-        - Priority: Low
+        - High
+        - Medium
+        - Low
         - Not Assigned
 
   - type: checkboxes
