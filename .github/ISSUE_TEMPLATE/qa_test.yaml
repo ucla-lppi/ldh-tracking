@@ -1,16 +1,27 @@
 name: "QA Test: [Feature/Functionality]"
-description: "Log QA results for a feature/functionality across browsers/devices."
+description: "Log QA results for a feature or functionality."
 title: "QA: [Feature/Functionality Name]"
-labels: ["QA", "Status: In Progress"]
+labels: ["QA", "Current Release", "Status: In Progress"]
 body:
   - type: input
     id: feature
     attributes:
       label: Feature/Functionality
-      description: "Describe the feature or functionality being tested."
+      description: "What are you testing?"
       placeholder: "e.g., The ACS-based indicator title is revised to reflect use of 2022 data"
     validations:
       required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority (optional)
+      description: "How urgent is this QA check?"
+      options:
+        - Priority: High
+        - Priority: Medium
+        - Priority: Low
+        - Not Assigned
 
   - type: checkboxes
     id: browsers_tested
@@ -41,3 +52,8 @@ body:
     attributes:
       label: Notes and Issues
       description: "Describe any issues, device used, and how to reproduce, if applicable."
+
+  - type: markdown
+    attributes:
+      value: |
+        **Note:** The overall QA status (`QA Status: Pass` or `QA Status: Fail`) will be set automatically based on your selections above.
