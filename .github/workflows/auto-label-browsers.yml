@@ -15,13 +15,15 @@ jobs:
         uses: actions/github-script@v7.0.1
         with:
           script: |
-            const qaTemplate = "### Priority (optional)\n<!-- Select: High, Medium, Low, Not Assigned -->\n\n### Browsers/Devices Tested\n<!--\n- [ ] Chrome - desktop\n- [ ] Safari - desktop\n- [ ] Firefox - desktop\n- [ ] Chrome - mobile\n- [ ] Safari - mobile\n- [ ] Firefox - mobile\n-->\n\n### Browsers/Devices Passed\n<!--\n- [ ] Chrome - desktop\n- [ ] Safari - desktop\n- [ ] Firefox - desktop\n- [ ] Chrome - mobile\n- [ ] Safari - mobile\n- [ ] Firefox - mobile\n-->\n\n### Notes and Issues\n<!-- List any failures, details, and steps to reproduce. -->";
+            const qaTemplate = "### Priority (optional)\n\nNot Assigned\n\n### Browsers/Devices Tested\n\n- [ ] Chrome - desktop\n- [ ] Safari - desktop\n- [ ] Firefox - desktop\n- [ ] Chrome - mobile\n- [ ] Safari - mobile\n- [ ] Firefox - mobile\n\n### Browsers/Devices Passed\n\n- [ ] Chrome - desktop\n- [ ] Safari - desktop\n- [ ] Firefox - desktop\n- [ ] Chrome - mobile\n- [ ] Safari - mobile\n- [ ] Firefox - mobile\n\n### Notes and Issues\n\n";
 
             // Get the current issue body
             let issueBody = context.payload.issue.body;
+            let wasEmpty = false;
 
             // If the body is empty or only whitespace, populate it with the template
             if (!issueBody || !issueBody.trim()) {
+              wasEmpty = true;
               issueBody = qaTemplate;
               await github.rest.issues.update({
                 owner: context.repo.owner,
@@ -44,13 +46,11 @@ jobs:
             const tested = getCheckedItems(issueBody, "Browsers/Devices Tested");
             const passed = getCheckedItems(issueBody, "Browsers/Devices Passed");
 
-            // Determine if all tested browsers passed
-            const allPassed = tested.length > 0 && tested.every(browser => passed.includes(browser));
-
             // Define QA Status labels
             const passLabel = "QA Status: Pass";
             const failLabel = "QA Status: Fail";
             const inProgressLabel = "Status: In Progress";
+            const toTestLabel = "Status: To Test";
 
             // Priority mapping
             const priorityMap = {
@@ -78,13 +78,21 @@ jobs:
             let labelsToAdd = [];
             let labelsToRemove = [];
 
-            // QA Status labels
-            if (allPassed) {
-              labelsToAdd.push(passLabel);
-              labelsToRemove.push(failLabel, inProgressLabel);
+            // Status labels logic
+            if (wasEmpty) {
+              // If the issue was blank and just populated, label as "To Test"
+              labelsToAdd.push(toTestLabel);
+              labelsToRemove.push(passLabel, failLabel, inProgressLabel);
             } else {
-              labelsToAdd.push(failLabel);
-              labelsToRemove.push(passLabel, inProgressLabel);
+              // Determine if all tested browsers passed
+              const allPassed = tested.length > 0 && tested.every(browser => passed.includes(browser));
+              if (allPassed) {
+                labelsToAdd.push(passLabel);
+                labelsToRemove.push(failLabel, inProgressLabel, toTestLabel);
+              } else {
+                labelsToAdd.push(failLabel);
+                labelsToRemove.push(passLabel, inProgressLabel, toTestLabel);
+              }
             }
 
             // Priority labels
