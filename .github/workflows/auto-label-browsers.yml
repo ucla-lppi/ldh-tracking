@@ -15,34 +15,7 @@ jobs:
         uses: actions/github-script@v7.0.1
         with:
           script: |
-            // QA Issue Template to insert if body is empty
-            const qaTemplate = `
-### Priority (optional)
-<!-- Select: High, Medium, Low, Not Assigned -->
-
-### Browsers/Devices Tested
-<!--
-- [ ] Chrome - desktop
-- [ ] Safari - desktop
-- [ ] Firefox - desktop
-- [ ] Chrome - mobile
-- [ ] Safari - mobile
-- [ ] Firefox - mobile
--->
-
-### Browsers/Devices Passed
-<!--
-- [ ] Chrome - desktop
-- [ ] Safari - desktop
-- [ ] Firefox - desktop
-- [ ] Chrome - mobile
-- [ ] Safari - mobile
-- [ ] Firefox - mobile
--->
-
-### Notes and Issues
-<!-- List any failures, details, and steps to reproduce. -->
-`;
+            const qaTemplate = "### Priority (optional)\n<!-- Select: High, Medium, Low, Not Assigned -->\n\n### Browsers/Devices Tested\n<!--\n- [ ] Chrome - desktop\n- [ ] Safari - desktop\n- [ ] Firefox - desktop\n- [ ] Chrome - mobile\n- [ ] Safari - mobile\n- [ ] Firefox - mobile\n-->\n\n### Browsers/Devices Passed\n<!--\n- [ ] Chrome - desktop\n- [ ] Safari - desktop\n- [ ] Firefox - desktop\n- [ ] Chrome - mobile\n- [ ] Safari - mobile\n- [ ] Firefox - mobile\n-->\n\n### Notes and Issues\n<!-- List any failures, details, and steps to reproduce. -->";
 
             // Get the current issue body
             let issueBody = context.payload.issue.body;
