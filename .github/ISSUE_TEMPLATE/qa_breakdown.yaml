@@ -1,0 +1,30 @@
+name: "Breakdown QA"
+description: "Log QA results for a new breakdown option."
+labels: ["QA-Breakdown", "Current Release", "Status: In Progress"]
+body:
+  - type: input
+    id: breakdown_name
+    attributes:
+      label: Breakdown Name
+      description: Enter the name of the breakdown being tested.
+      placeholder: e.g., Homeownership
+
+  - type: checkboxes
+    id: qa_checks
+    attributes:
+      label: QA Checklist
+      description: Check each item after verifying it for this breakdown.
+      options:
+        - label: Breakdown option appears in UI
+        - label: Data is correct and updates when selected
+        - label: Visualizations update as expected
+        - label: Titles/subtitles update correctly
+        - label: Filter and indicator interactions work
+        - label: Technical notes/glossary are updated
+        - label: Export/download includes breakdown
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes/Findings
+      description: Add any findings, screenshots, or issues discovered during QA.
