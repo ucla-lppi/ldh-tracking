@@ -1,0 +1,55 @@
+name: "Feature QA"
+description: "Log pass/fail for indicators, breakdowns, and filters."
+labels: ["QA-Feature", "Current Release", "Status: In Progress"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## For each item below, check if it PASSES QA.
+
+  - type: checkboxes
+    id: indicators
+    attributes:
+      label: Indicators
+      description: Check each indicator that passes QA.
+      options:
+        - label: Percent of individuals with a disability
+        - label: Percent of individuals with Hearing Difficulty
+        - label: Percent of individuals with Vision Difficulty
+        - label: Percent of individuals with Cognitive Difficulty
+        - label: Percent of individuals with Ambulatory Difficulty
+        - label: Percent of individuals with Self-care Difficulty
+        - label: Percent of individuals with Independent Living Difficulty
+        - label: Percent of Latino workers in high automation-risk occupations
+        - label: Number of vehicles available
+        - label: Percent of workers take public transportation to walk
+        - label: Percent of workers drive to walk
+        - label: Percent of workers walked to work
+        - label: Percent of workers commute through other means
+
+  - type: checkboxes
+    id: breakdowns
+    attributes:
+      label: Breakdowns
+      description: Check each breakdown that passes QA.
+      options:
+        - label: Homeownership
+        - label: Disability
+
+  - type: checkboxes
+    id: filters
+    attributes:
+      label: Filters
+      description: Check each filter that passes QA.
+      options:
+        - label: Self-employed
+        - label: Sex
+        - label: Workers in high-risk occupations
+        - label: Hourly wage filter
+        - label: With a disability
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes/Comments
+      description: Add any notes, failures, or screenshots here.
