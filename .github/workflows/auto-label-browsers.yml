@@ -15,6 +15,13 @@ jobs:
         uses: actions/github-script@v7.0.1
         with:
           script: |
+            // Only operate if the issue has a label containing "QA" (case-insensitive)
+            const issueLabels = context.payload.issue.labels.map(l => l.name);
+            const hasQALabel = issueLabels.some(name => /qa/i.test(name));
+            if (!hasQALabel) {
+              return;
+            }
+
             const qaTemplate = "### Priority (optional)\n\nNot Assigned\n\n### Browsers/Devices Tested\n\n- [ ] Chrome - desktop\n- [ ] Safari - desktop\n- [ ] Firefox - desktop\n- [ ] Chrome - mobile\n- [ ] Safari - mobile\n- [ ] Firefox - mobile\n\n### Browsers/Devices Passed\n\n- [ ] Chrome - desktop\n- [ ] Safari - desktop\n- [ ] Firefox - desktop\n- [ ] Chrome - mobile\n- [ ] Safari - mobile\n- [ ] Firefox - mobile\n\n### Notes and Issues\n\n";
 
             // Get the current issue body
